@@ -1,9 +1,9 @@
 # Nb-IoT to Telenor Managed IoT Cloud bridge
 
-Get started:
+### Get started:
 
 npm i
 
-Run:
+### Run:
 
 node index.js --path <path to cert folder> --username <mic username> --password <mic password>
