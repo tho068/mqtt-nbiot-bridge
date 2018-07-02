@@ -1,6 +1,0 @@
-module.exports = {
-    'secret': 'ilovescotchyscotch',
-    'database': 'mongodb://localhost:27017/cmb',
-    'issuer' : 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_jKaY6EGjT',
-    'aws_jwt' : {"keys":[{"alg":"RS256","e":"AQAB","kid":"f/tCb0bqi8VDnBKaiR1fTCGsw6y91zUuBrewT/E2S84=","kty":"RSA","n":"y1FVOfdcaVhAqAyxlzZQ56jTZNIlubc6IShLP_RNIt6Uf31hfek3r4zC8Sockh5Bp27-gvW9wFHg2g8o_VZRfGYDs6Be_ud0Hclr04uV5IDI9kFJG7V7eCvOxN560e3qMYyY4GV1TPIdtbest0iZ-AU-o120M4zJbqaCKJ8GEW1p01TGd7AJJP4wLOmmtkoCrprPBPD3IeLp7pDKKaNDA8GQq6TOrjJltlnB3qzAJDkgmGfbAsluiyRcn-Sheq5q7vD0-FpvbiZ-HrK-N3FG3O6Nx-gOqDlzMi2aDFn0ZlTZfXrw8ByvAoivGpF7q_2_9bPUiLwZSt_mTzoDtD6Pew","use":"sig"},{"alg":"RS256","e":"AQAB","kid":"NPNbjqn649c3cJf/5c2eDvhLNbxBZCpe95WWNraTeaQ=","kty":"RSA","n":"hFGmrsIregK2fuvvRWolbwPbD6M1NgzKoxREteKvYX96ytu5B5mudy0KTT_qWzNcnceihV8AsZeOFWoRID8Et9REBMZ69bvm1cLXQHqKvEAJonTcLGbXHFFfoKuKhkbtKHem72xZhrcQEg0cIFTxNpv-m736OAnYG2epVaYkitAR4HAp9TNgKh9LGfBRSJ-Yq6oZ1Vy42xxgvVekAEJCeF5_Yel5EB7OnolPE9L5mByRUqgG_ZI-iCOi8KojAcwJDoZcKu5trw-UjGtMvHXIfRuJANweS8pWIFot3pYqcskTd85S0DzXZgvdh7JQUjZXmj4wg-x5pND5m6UvmvUIkQ","use":"sig"}]}
-};
