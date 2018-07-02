@@ -13,51 +13,44 @@ function fixPath(str){
 module.exports = {
     /* Get new certificate from MIC */
     getCertificate: (username, password, thingName, path) => {
-        return new Promise((Resolve, Reject) => {
-            const api = new mic
-            api.init ('startiot.mic.telenorconnexion.com')
-                .then( (manifest, credentials) => {
-                    api.login (username, password)
-                        .then (user => {
-                            const payload = {
-                                action: 'DOWNLOAD_CERTIFICATE',
-                                attributes: {
-                                    thingName
-                                }
-                            }
-                            api.invoke('ThingLambda', payload)
-                                .then (data => {
-                                    fs.writeFile(`${fixPath(path)}/${thingName}.zip`, Buffer.from(data, 'base64'), (err) => {
-                                        if (err) {
-                                            console.log(err)
-                                        }
-                            
-                                        /* Unzip the file */
-                                        let zip = new AdmZip(`${fixPath(path)}/${thingName}.zip`)
-                                        zip.extractAllTo(`${fixPath(path)}/`, true)
-                            
-                                        /* Delete tmp zip */
-                                        fs.unlink(`${fixPath(path)}/${thingName}.zip`, (err) => {
-                                            if (err) console.log(err);
-                                        })
-    
-                                        Resolve()
-                                    })
-                                })
-                                .catch(e => {
-                                    console.log(e)
-                                    Reject(e)
-                                })
-                            })
-                            .catch(e => {
-                                console.log(e)
-                                Reject(e)
-                            })
+        return new Promise(async(Resolve, Reject) => {
+            try {
+                const api = new mic
+            
+                await api.init ('startiot.mic.telenorconnexion.com')
+                await api.login (username, password)
+                
+                const payload = {
+                    action: 'DOWNLOAD_CERTIFICATE',
+                    attributes: {
+                        thingName
+                    }
+                }
+                
+                const data = await api.invoke('ThingLambda', payload)
+        
+                fs.writeFile(`${fixPath(path)}/${thingName}.zip`, Buffer.from(data, 'base64'), (err) => {
+                    if (err) {
+                        console.log(err)
+                    }
+        
+                    /* Unzip the file */
+                    let zip = new AdmZip(`${fixPath(path)}/${thingName}.zip`)
+                    zip.extractAllTo(`${fixPath(path)}/`, true)
+        
+                    /* Delete tmp zip */
+                    fs.unlink(`${fixPath(path)}/${thingName}.zip`, (err) => {
+                        if (err) console.log(err);
                     })
-                    .catch(e => {
-                        console.log(e)
-                        Reject(e)
-                    })
+
+                    Resolve()
+                })
+                
+            } 
+            catch(e){
+                console.log(e)
+                Reject()
+            }
         })
     },
 

@@ -91,14 +91,35 @@ class Downlink{
         this.init()
       }
 
+    transformMessage(message){
+        try {
+            let data = message.state.desired
+            let res = {}
+
+            for(let key in data){
+                res[key] = data[key]
+            }
+
+            console.log(res)
+            return res
+        }
+        catch(e){
+            console.log(e)
+            return null
+        }
+    }
+
     /* Add a new downlink message to the ds */
     storeDownlink(thingName, message){
         if(!this.ds.hasOwnProperty(thingName)){
             this.ds[thingName] = [];
-            this.ds[thingName].push(message);
+            this.ds[thingName].push({resources: this.transformMessage(message), timestamp: + new Date()});
         }
         else {
-            this.ds[thingName].push(message);
+            this.ds[thingName].push({resources: this.transformMessage(message), timestamp: + new Date()});
+            if(this.ds[thingName].length > 3){
+                this.ds[thingName].length = 3
+            }
         }
     }
 
