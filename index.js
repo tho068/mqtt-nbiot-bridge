@@ -85,7 +85,6 @@ function sendMQTTmessage(thingId, data) {
 function getDownlink(thingId){
   try {
     return DownLink.getDownlink(thingId)
-    
   }
   catch(e){
     console.log(e)

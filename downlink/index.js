@@ -111,27 +111,37 @@ class Downlink{
 
     /* Add a new downlink message to the ds */
     storeDownlink(thingName, message){
-        if(!this.ds.hasOwnProperty(thingName)){
-            this.ds[thingName] = [];
-            this.ds[thingName].push({resources: this.transformMessage(message), timestamp: + new Date()});
-        }
-        else {
-            this.ds[thingName].push({resources: this.transformMessage(message), timestamp: + new Date()});
-            if(this.ds[thingName].length > 3){
-                this.ds[thingName].length = 3
+        try {
+            if(!this.ds.hasOwnProperty(thingName)){
+                this.ds[thingName] = [];
+                this.ds[thingName].push({resources: this.transformMessage(message), timestamp: + new Date()});
             }
+            else {
+                this.ds[thingName].push({resources: this.transformMessage(message), timestamp: + new Date()});
+                if(this.ds[thingName].length > 3){
+                    this.ds[thingName].length = 3
+                }
+            }
+        }
+        catch(e){
+            console.log(e)
         }
     }
 
     /* Get downlink messages from ds */
     getDownlink(thingName){
-        if (this.ds.hasOwnProperty(thingName)){
-            const tmp = this.ds[thingName]
-            this.ds[thingName] = [];
-            return tmp
+        try {
+            if (this.ds.hasOwnProperty(thingName)){
+                const tmp = this.ds[thingName]
+                this.ds[thingName] = [];
+                return tmp
+            }
+    
+            return null;
         }
-
-        return null;
+        catch(e){
+            console.log(e)
+        }
     }
 
     /* MQTT on message */
@@ -141,6 +151,7 @@ class Downlink{
             const thingId = topicSplit[topicSplit.length - 1]
             
             const data = JSON.parse(message)
+            
             if (data.state.hasOwnProperty('desired')){
                 this.storeDownlink(thingId, data)
             }
