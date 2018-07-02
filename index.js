@@ -105,8 +105,6 @@ server.on('request', async function (req, res) {
 
     const downlinkData = getDownlink(thingId)
 
-    console.log(downlinkData)
-
     sendMQTTmessage(thingId, data)
 
     res.code = 200

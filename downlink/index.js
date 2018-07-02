@@ -120,7 +120,7 @@ class Downlink{
             const thingId = topicSplit[topicSplit.length - 1]
             
             const data = JSON.parse(message)
-            if(data.state.hasOwnProperty('desired')){
+            if (data.state.hasOwnProperty('desired')){
                 this.storeDownlink(thingId, data)
             }
         }
