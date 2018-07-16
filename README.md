@@ -12,5 +12,5 @@ node index.js --path "path to cert folder" --username "mic username" --password 
 
 Publishing an authenticated message requires the following:
 - Download the certificate files for the device from MIC
-- Create an MD5 hash of the pubkey.pem file
+- Create an MD5 hash of the pubkey.pem file (This can be done using the hashtest.js file)
 - Add the hash as a coap option to the request under the name '403'
