@@ -119,7 +119,7 @@ server.on('request', async function (req, res) {
       }))
     } else {
       res.end(JSON.stringify({
-        message: "Not authorized to publishe",
+        message: "Not authorized to publish",
         status: 403,
       }))  
     }
