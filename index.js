@@ -6,7 +6,7 @@ const fs = require('fs')
 const utils = require('./utils')
 const downlink = require('./downlink')
 
-if (typeof argv.path === 'undefined' || typeof argv.port === 'undefined' || typeof argv.username === 'undefined' || typeof argv.password === 'undefined'){
+if (typeof argv.path === 'undefined' || typeof argv.username === 'undefined' || typeof argv.password === 'undefined'){
   console.log("Please specify the required arguments to run the application");
   return
 }
