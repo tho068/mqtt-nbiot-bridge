@@ -12,13 +12,13 @@ class Downlink{
 
         this.mic = new MIC;
         this.mic.init("startiot.mic.telenorconnexion.com")
-            .then((manifest, credentials) => {
+            .then(() => {
                 console.log("Manifest is retrived");
 
-                this.manifest = manifest;
+                this.manifest = this.mic.manifest
 
                 this.mic.login(userName, password)
-                    .then(user => {
+                    .then(() => {
                         console.log("Signed in");
 
                         this.init(this.mic._AWS.config);
@@ -57,7 +57,7 @@ class Downlink{
 
     /* MQTT reconnect */
     onReconnect () {
-        MIC.refreshCredentials().then(() => {
+        this.mic._refreshCredentials().then(() => {
           this.retries++
           if (this.retries >= 2) {
             this.retries = 0

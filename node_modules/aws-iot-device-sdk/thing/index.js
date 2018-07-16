@@ -218,7 +218,8 @@ function ThingShadowsClient(deviceOptions, thingShadowOptions) {
       // these properties are internal to this class.
       //
       delete stateObject.clientToken;
-      delete stateObject.version;
+      //Expose shadow version from raw object
+      //delete stateObject.version;
       //
       // Update the thing version on every accepted or delta message which 
       // contains it.
@@ -332,6 +333,12 @@ function ThingShadowsClient(deviceOptions, thingShadowOptions) {
    });
    device.on('error', function(error) {
       that.emit('error', error);
+   });
+   device.on('packetsend', function(packet) {
+      that.emit('packetsend', packet);
+   });
+   device.on('packetreceive', function(packet) {
+      that.emit('packetreceive', packet);
    });
    device.on('message', function(topic, payload) {
 
@@ -757,6 +764,13 @@ function ThingShadowsClient(deviceOptions, thingShadowOptions) {
    //
    this.updateWebSocketCredentials = function(accessKeyId, secretKey, sessionToken, expiration) {
       device.updateWebSocketCredentials(accessKeyId, secretKey, sessionToken, expiration);
+   };
+   //
+   // Call this function to update the custom auth headers
+   // This will be passed through to the device class
+   //
+   this.updateCustomAuthHeaders = function(newHeaders) {
+      device.updateCustomAuthHeaders(newHeaders);
    };
 
    //

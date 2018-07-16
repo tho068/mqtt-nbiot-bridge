@@ -1516,13 +1516,13 @@ describe( "thing shadow class unit tests", function() {
           sinon.assert.calledOnce(fakeCallback2); // Should be triggered
           assert.equal(fakeCallback2.getCalls()[0].args[0],'testShadow3');
           assert.equal(fakeCallback2.getCalls()[0].args[1],'update');
-          assert.deepEqual(fakeCallback2.getCalls()[0].args[2],{stateVar:'value111'});
+          assert.deepEqual(fakeCallback2.getCalls()[0].args[2],{stateVar:'value111', version:2});
           mockMQTTClientObject.emit('message', '$aws/things/testShadow3/shadow/delete/accepted', '{ "version":1, "timestamp":1456254966, "clientToken": "unknownClienToken" }');
           sinon.assert.notCalled(fakeCallback);   // Should never trigger the callback
           sinon.assert.calledTwice(fakeCallback2); // Should be triggered
           assert.equal(fakeCallback2.getCalls()[1].args[0],'testShadow3');
           assert.equal(fakeCallback2.getCalls()[1].args[1],'delete');
-          assert.deepEqual(fakeCallback2.getCalls()[1].args[2],{'timestamp':1456254966});
+          assert.deepEqual(fakeCallback2.getCalls()[1].args[2],{'timestamp':1456254966, version:1});
           mockMQTTClientObject.emit('message', '$aws/things/testShadow3/shadow/get/accepted', '{ "state": { "desired": { "value": 1 }}, "version":1, "timestamp":1456254966, "clientToken": "unknownClienToken" }');
           sinon.assert.notCalled(fakeCallback);   // Should never trigger the callback
           sinon.assert.calledTwice(fakeCallback2); // Should never trigger the callback

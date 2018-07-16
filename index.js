@@ -96,24 +96,33 @@ server.on('request', async function (req, res) {
     let buffer = await readStream(req)
     let data = flatten(JSON.parse(buffer.toString()))
     let thingId = req.url.substring(1)
+    let hash = utils.findAuthOption(req.options)
 
     /* Check if certificate exist */
     if (!fs.existsSync(`${argv.path}/${thingId}`)) {
       await utils.getCertificate(argv.username, argv.password, thingId, argv.path)
     }
 
-    const downlinkData = getDownlink(thingId)
+    let verified = await utils.verifyMessage(hash, thingId)
 
-    sendMQTTmessage(thingId, data)
+    if(verified === true){
+      const downlinkData = getDownlink(thingId)
 
-    res.code = 200
-
-    res.end(JSON.stringify({
-      message: "Message is being published",
-      status: 200,
-      data: (downlinkData) ? downlinkData : null
-    }))
-
+      sendMQTTmessage(thingId, data)
+  
+      res.code = 200
+  
+      res.end(JSON.stringify({
+        message: "Message is being published",
+        status: 200,
+        data: (downlinkData) ? downlinkData : null
+      }))
+    } else {
+      res.end(JSON.stringify({
+        message: "Not authorized to publishe",
+        status: 403,
+      }))  
+    }
   } 
   catch (e){
     console.log(e)

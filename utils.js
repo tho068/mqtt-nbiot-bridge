@@ -2,6 +2,7 @@ const mic = require('mic-sdk-js').default
 const fs = require('fs')
 const AdmZip = require('adm-zip')
 const awsIot = require('aws-iot-device-sdk')
+const crypto = require('crypto');
 
 function fixPath(str){
     if(str.substr(-1) === '/') {
@@ -100,5 +101,39 @@ module.exports = {
         } catch(e) {
             console.log(e)
         }
+    },
+
+    /* Verify the device publishing a message to MIC */
+    verifyMessage: (hash, thingName) => {
+        return new Promise((Resolve, Reject) => {
+            try{
+                if(hash == null){
+                    Resolve(false)
+                    return
+                }
+                fs.readFile(`certs/${thingName}/pubkey.pem`, function(err, data){
+                    let match = crypto.createHash('md5').update(data).digest("hex")
+                    if( hash === match ){
+                        Resolve(true)
+                        return
+                    }
+                    Resolve(false)
+                })
+            } catch(e){
+                Reject(e)
+            }
+        })
+    },
+
+    findAuthOption: (options) => {
+        for(let i = 0; i < options.length; i++){
+            let option = options[i]
+            console.log(option)
+            if(option.name == '403'){
+                return option.value.toString('binary')
+            }
+        }
+
+        return null
     }
 }

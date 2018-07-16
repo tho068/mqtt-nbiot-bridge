@@ -18,3 +18,4 @@
  */
 module.exports.device = require('./device');
 module.exports.thingShadow = require('./thing');
+module.exports.jobs = require('./jobs');

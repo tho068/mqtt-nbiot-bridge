@@ -106,11 +106,12 @@ module.exports = function(description, args, processFunction, argumentHelp) {
          clientCert: 'certificate.pem.crt',
          caCert: 'root-CA.crt',
          testMode: 1,
+         /* milliseconds */
          baseReconnectTimeMs: 4000,
-         keepAlive: 30,
+         /* seconds */
+         keepAlive: 300,
          /* milliseconds */
          delay: 4000,
-         /* milliseconds */
          Debug: false
       },
       unknown: function() {
@@ -166,10 +167,10 @@ module.exports = function(description, args, processFunction, argumentHelp) {
          }
       }
       if (!isUndefined(config.host)) {
-         args.host = config.host;
+         args.Host = config.host;
       }
       if (!isUndefined(config.port)) {
-         args.port = config.port;
+         args.Port = config.port;
       }
       //
       // When using a JSON configuration document from the AWS Console, allow

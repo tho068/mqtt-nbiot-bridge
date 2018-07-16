@@ -36,6 +36,10 @@ declare class ES extends Service {
    */
   deleteElasticsearchDomain(callback?: (err: AWSError, data: ES.Types.DeleteElasticsearchDomainResponse) => void): Request<ES.Types.DeleteElasticsearchDomainResponse, AWSError>;
   /**
+   * Deletes the service-linked role that Elasticsearch Service uses to manage and maintain VPC domains. Role deletion will fail if any existing VPC domains use the role. You must delete any such Elasticsearch domains before deleting the role. See Deleting Elasticsearch Service Role in VPC Endpoints for Amazon Elasticsearch Service Domains.
+   */
+  deleteElasticsearchServiceRole(callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
+  /**
    * Returns domain configuration information about the specified Elasticsearch domain, including the domain ID, domain endpoint, and domain ARN.
    */
   describeElasticsearchDomain(params: ES.Types.DescribeElasticsearchDomainRequest, callback?: (err: AWSError, data: ES.Types.DescribeElasticsearchDomainResponse) => void): Request<ES.Types.DescribeElasticsearchDomainResponse, AWSError>;
@@ -68,6 +72,22 @@ declare class ES extends Service {
    */
   describeElasticsearchInstanceTypeLimits(callback?: (err: AWSError, data: ES.Types.DescribeElasticsearchInstanceTypeLimitsResponse) => void): Request<ES.Types.DescribeElasticsearchInstanceTypeLimitsResponse, AWSError>;
   /**
+   * Lists available reserved Elasticsearch instance offerings.
+   */
+  describeReservedElasticsearchInstanceOfferings(params: ES.Types.DescribeReservedElasticsearchInstanceOfferingsRequest, callback?: (err: AWSError, data: ES.Types.DescribeReservedElasticsearchInstanceOfferingsResponse) => void): Request<ES.Types.DescribeReservedElasticsearchInstanceOfferingsResponse, AWSError>;
+  /**
+   * Lists available reserved Elasticsearch instance offerings.
+   */
+  describeReservedElasticsearchInstanceOfferings(callback?: (err: AWSError, data: ES.Types.DescribeReservedElasticsearchInstanceOfferingsResponse) => void): Request<ES.Types.DescribeReservedElasticsearchInstanceOfferingsResponse, AWSError>;
+  /**
+   * Returns information about reserved Elasticsearch instances for this account.
+   */
+  describeReservedElasticsearchInstances(params: ES.Types.DescribeReservedElasticsearchInstancesRequest, callback?: (err: AWSError, data: ES.Types.DescribeReservedElasticsearchInstancesResponse) => void): Request<ES.Types.DescribeReservedElasticsearchInstancesResponse, AWSError>;
+  /**
+   * Returns information about reserved Elasticsearch instances for this account.
+   */
+  describeReservedElasticsearchInstances(callback?: (err: AWSError, data: ES.Types.DescribeReservedElasticsearchInstancesResponse) => void): Request<ES.Types.DescribeReservedElasticsearchInstancesResponse, AWSError>;
+  /**
    * Returns the name of all Elasticsearch domains owned by the current user's account. 
    */
   listDomainNames(callback?: (err: AWSError, data: ES.Types.ListDomainNamesResponse) => void): Request<ES.Types.ListDomainNamesResponse, AWSError>;
@@ -95,6 +115,14 @@ declare class ES extends Service {
    * Returns all tags for the given Elasticsearch domain.
    */
   listTags(callback?: (err: AWSError, data: ES.Types.ListTagsResponse) => void): Request<ES.Types.ListTagsResponse, AWSError>;
+  /**
+   * Allows you to purchase reserved Elasticsearch instances.
+   */
+  purchaseReservedElasticsearchInstanceOffering(params: ES.Types.PurchaseReservedElasticsearchInstanceOfferingRequest, callback?: (err: AWSError, data: ES.Types.PurchaseReservedElasticsearchInstanceOfferingResponse) => void): Request<ES.Types.PurchaseReservedElasticsearchInstanceOfferingResponse, AWSError>;
+  /**
+   * Allows you to purchase reserved Elasticsearch instances.
+   */
+  purchaseReservedElasticsearchInstanceOffering(callback?: (err: AWSError, data: ES.Types.PurchaseReservedElasticsearchInstanceOfferingResponse) => void): Request<ES.Types.PurchaseReservedElasticsearchInstanceOfferingResponse, AWSError>;
   /**
    * Removes the specified set of tags from the specified Elasticsearch domain.
    */
@@ -157,6 +185,35 @@ declare namespace ES {
     Status: OptionStatus;
   }
   export type Boolean = boolean;
+  export type CloudWatchLogsLogGroupArn = string;
+  export interface CognitoOptions {
+    /**
+     * Specifies the option to enable Cognito for Kibana authentication.
+     */
+    Enabled?: Boolean;
+    /**
+     * Specifies the Cognito user pool ID for Kibana authentication.
+     */
+    UserPoolId?: UserPoolId;
+    /**
+     * Specifies the Cognito identity pool ID for Kibana authentication.
+     */
+    IdentityPoolId?: IdentityPoolId;
+    /**
+     * Specifies the role ARN that provides Elasticsearch permissions for accessing Cognito resources.
+     */
+    RoleArn?: RoleArn;
+  }
+  export interface CognitoOptionsStatus {
+    /**
+     * Specifies the Cognito options for the specified Elasticsearch domain.
+     */
+    Options: CognitoOptions;
+    /**
+     * Specifies the status of the Cognito options for the specified Elasticsearch domain.
+     */
+    Status: OptionStatus;
+  }
   export interface CreateElasticsearchDomainRequest {
     /**
      * The name of the Elasticsearch domain that you are creating. Domain names are unique across the domains owned by an account within an AWS region. Domain names must start with a letter or number and can contain the following characters: a-z (lowercase), 0-9, and - (hyphen).
@@ -183,9 +240,25 @@ declare namespace ES {
      */
     SnapshotOptions?: SnapshotOptions;
     /**
+     * Options to specify the subnets and security groups for VPC endpoint. For more information, see Creating a VPC in VPC Endpoints for Amazon Elasticsearch Service Domains
+     */
+    VPCOptions?: VPCOptions;
+    /**
+     * Options to specify the Cognito user and identity pools for Kibana authentication. For more information, see Amazon Cognito Authentication for Kibana.
+     */
+    CognitoOptions?: CognitoOptions;
+    /**
+     * Specifies the Encryption At Rest Options.
+     */
+    EncryptionAtRestOptions?: EncryptionAtRestOptions;
+    /**
      *  Option to allow references to indices in an HTTP request body. Must be false when configuring access to individual sub-resources. By default, the value is true. See Configuration Advanced Options for more information.
      */
     AdvancedOptions?: AdvancedOptions;
+    /**
+     * Map of LogType and LogPublishingOption, each containing options to publish a given type of Elasticsearch log.
+     */
+    LogPublishingOptions?: LogPublishingOptions;
   }
   export interface CreateElasticsearchDomainResponse {
     /**
@@ -258,6 +331,54 @@ declare namespace ES {
   export interface DescribeElasticsearchInstanceTypeLimitsResponse {
     LimitsByRole?: LimitsByRole;
   }
+  export interface DescribeReservedElasticsearchInstanceOfferingsRequest {
+    /**
+     * The offering identifier filter value. Use this parameter to show only the available offering that matches the specified reservation identifier.
+     */
+    ReservedElasticsearchInstanceOfferingId?: GUID;
+    /**
+     * Set this value to limit the number of results returned. If not specified, defaults to 100.
+     */
+    MaxResults?: MaxResults;
+    /**
+     * NextToken should be sent in case if earlier API call produced result containing NextToken. It is used for pagination.
+     */
+    NextToken?: NextToken;
+  }
+  export interface DescribeReservedElasticsearchInstanceOfferingsResponse {
+    /**
+     * Provides an identifier to allow retrieval of paginated results.
+     */
+    NextToken?: NextToken;
+    /**
+     * List of reserved Elasticsearch instance offerings
+     */
+    ReservedElasticsearchInstanceOfferings?: ReservedElasticsearchInstanceOfferingList;
+  }
+  export interface DescribeReservedElasticsearchInstancesRequest {
+    /**
+     * The reserved instance identifier filter value. Use this parameter to show only the reservation that matches the specified reserved Elasticsearch instance ID.
+     */
+    ReservedElasticsearchInstanceId?: GUID;
+    /**
+     * Set this value to limit the number of results returned. If not specified, defaults to 100.
+     */
+    MaxResults?: MaxResults;
+    /**
+     * NextToken should be sent in case if earlier API call produced result containing NextToken. It is used for pagination.
+     */
+    NextToken?: NextToken;
+  }
+  export interface DescribeReservedElasticsearchInstancesResponse {
+    /**
+     * Provides an identifier to allow retrieval of paginated results.
+     */
+    NextToken?: String;
+    /**
+     * List of reserved Elasticsearch instances.
+     */
+    ReservedElasticsearchInstances?: ReservedElasticsearchInstanceList;
+  }
   export type DomainId = string;
   export interface DomainInfo {
     /**
@@ -268,6 +389,7 @@ declare namespace ES {
   export type DomainInfoList = DomainInfo[];
   export type DomainName = string;
   export type DomainNameList = DomainName[];
+  export type Double = number;
   export interface EBSOptions {
     /**
      * Specifies whether EBS-based storage is enabled.
@@ -296,7 +418,7 @@ declare namespace ES {
      */
     Status: OptionStatus;
   }
-  export type ESPartitionInstanceType = "m3.medium.elasticsearch"|"m3.large.elasticsearch"|"m3.xlarge.elasticsearch"|"m3.2xlarge.elasticsearch"|"m4.large.elasticsearch"|"m4.xlarge.elasticsearch"|"m4.2xlarge.elasticsearch"|"m4.4xlarge.elasticsearch"|"m4.10xlarge.elasticsearch"|"t2.micro.elasticsearch"|"t2.small.elasticsearch"|"t2.medium.elasticsearch"|"r3.large.elasticsearch"|"r3.xlarge.elasticsearch"|"r3.2xlarge.elasticsearch"|"r3.4xlarge.elasticsearch"|"r3.8xlarge.elasticsearch"|"i2.xlarge.elasticsearch"|"i2.2xlarge.elasticsearch"|"d2.xlarge.elasticsearch"|"d2.2xlarge.elasticsearch"|"d2.4xlarge.elasticsearch"|"d2.8xlarge.elasticsearch"|"c4.large.elasticsearch"|"c4.xlarge.elasticsearch"|"c4.2xlarge.elasticsearch"|"c4.4xlarge.elasticsearch"|"c4.8xlarge.elasticsearch"|"r4.large.elasticsearch"|"r4.xlarge.elasticsearch"|"r4.2xlarge.elasticsearch"|"r4.4xlarge.elasticsearch"|"r4.8xlarge.elasticsearch"|"r4.16xlarge.elasticsearch"|string;
+  export type ESPartitionInstanceType = "m3.medium.elasticsearch"|"m3.large.elasticsearch"|"m3.xlarge.elasticsearch"|"m3.2xlarge.elasticsearch"|"m4.large.elasticsearch"|"m4.xlarge.elasticsearch"|"m4.2xlarge.elasticsearch"|"m4.4xlarge.elasticsearch"|"m4.10xlarge.elasticsearch"|"t2.micro.elasticsearch"|"t2.small.elasticsearch"|"t2.medium.elasticsearch"|"r3.large.elasticsearch"|"r3.xlarge.elasticsearch"|"r3.2xlarge.elasticsearch"|"r3.4xlarge.elasticsearch"|"r3.8xlarge.elasticsearch"|"i2.xlarge.elasticsearch"|"i2.2xlarge.elasticsearch"|"d2.xlarge.elasticsearch"|"d2.2xlarge.elasticsearch"|"d2.4xlarge.elasticsearch"|"d2.8xlarge.elasticsearch"|"c4.large.elasticsearch"|"c4.xlarge.elasticsearch"|"c4.2xlarge.elasticsearch"|"c4.4xlarge.elasticsearch"|"c4.8xlarge.elasticsearch"|"r4.large.elasticsearch"|"r4.xlarge.elasticsearch"|"r4.2xlarge.elasticsearch"|"r4.4xlarge.elasticsearch"|"r4.8xlarge.elasticsearch"|"r4.16xlarge.elasticsearch"|"i3.large.elasticsearch"|"i3.xlarge.elasticsearch"|"i3.2xlarge.elasticsearch"|"i3.4xlarge.elasticsearch"|"i3.8xlarge.elasticsearch"|"i3.16xlarge.elasticsearch"|string;
   export interface ElasticsearchClusterConfig {
     /**
      * The instance type for an Elasticsearch cluster.
@@ -355,9 +477,25 @@ declare namespace ES {
      */
     SnapshotOptions?: SnapshotOptionsStatus;
     /**
+     * The VPCOptions for the specified domain. For more information, see VPC Endpoints for Amazon Elasticsearch Service Domains.
+     */
+    VPCOptions?: VPCDerivedInfoStatus;
+    /**
+     * The CognitoOptions for the specified domain. For more information, see Amazon Cognito Authentication for Kibana.
+     */
+    CognitoOptions?: CognitoOptionsStatus;
+    /**
+     * Specifies the EncryptionAtRestOptions for the Elasticsearch domain.
+     */
+    EncryptionAtRestOptions?: EncryptionAtRestOptionsStatus;
+    /**
      * Specifies the AdvancedOptions for the domain. See Configuring Advanced Options for more information.
      */
     AdvancedOptions?: AdvancedOptionsStatus;
+    /**
+     * Log publishing options for the given domain.
+     */
+    LogPublishingOptions?: LogPublishingOptionsStatus;
   }
   export interface ElasticsearchDomainStatus {
     /**
@@ -385,6 +523,10 @@ declare namespace ES {
      */
     Endpoint?: ServiceUrl;
     /**
+     * Map containing the Elasticsearch domain endpoints used to submit index and search requests. Example key, value: 'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'.
+     */
+    Endpoints?: EndpointsMap;
+    /**
      * The status of the Elasticsearch domain configuration. True if Amazon Elasticsearch Service is processing configuration changes. False if the configuration is active.
      */
     Processing?: Boolean;
@@ -406,9 +548,25 @@ declare namespace ES {
      */
     SnapshotOptions?: SnapshotOptions;
     /**
+     * The VPCOptions for the specified domain. For more information, see VPC Endpoints for Amazon Elasticsearch Service Domains.
+     */
+    VPCOptions?: VPCDerivedInfo;
+    /**
+     * The CognitoOptions for the specified domain. For more information, see Amazon Cognito Authentication for Kibana.
+     */
+    CognitoOptions?: CognitoOptions;
+    /**
+     *  Specifies the status of the EncryptionAtRestOptions.
+     */
+    EncryptionAtRestOptions?: EncryptionAtRestOptions;
+    /**
      * Specifies the status of the AdvancedOptions
      */
     AdvancedOptions?: AdvancedOptions;
+    /**
+     * Log publishing options for the given domain.
+     */
+    LogPublishingOptions?: LogPublishingOptions;
   }
   export type ElasticsearchDomainStatusList = ElasticsearchDomainStatus[];
   export type ElasticsearchInstanceTypeList = ESPartitionInstanceType[];
@@ -424,7 +582,31 @@ declare namespace ES {
     Status: OptionStatus;
   }
   export type ElasticsearchVersionString = string;
+  export interface EncryptionAtRestOptions {
+    /**
+     * Specifies the option to enable Encryption At Rest.
+     */
+    Enabled?: Boolean;
+    /**
+     *  Specifies the KMS Key ID for Encryption At Rest options.
+     */
+    KmsKeyId?: KmsKeyId;
+  }
+  export interface EncryptionAtRestOptionsStatus {
+    /**
+     *  Specifies the Encryption At Rest options for the specified Elasticsearch domain.
+     */
+    Options: EncryptionAtRestOptions;
+    /**
+     *  Specifies the status of the Encryption At Rest options for the specified Elasticsearch domain.
+     */
+    Status: OptionStatus;
+  }
+  export type EndpointsMap = {[key: string]: ServiceUrl};
   export type ErrorMessage = string;
+  export type GUID = string;
+  export type IdentityPoolId = string;
+  export type InstanceCount = number;
   export interface InstanceCountLimits {
     MinimumInstanceCount?: MinimumInstanceCount;
     MaximumInstanceCount?: MaximumInstanceCount;
@@ -433,7 +615,9 @@ declare namespace ES {
     InstanceCountLimits?: InstanceCountLimits;
   }
   export type InstanceRole = string;
+  export type Integer = number;
   export type IntegerClass = number;
+  export type KmsKeyId = string;
   export type LimitName = string;
   export type LimitValue = string;
   export type LimitValueList = LimitValue[];
@@ -506,6 +690,25 @@ declare namespace ES {
      */
     TagList?: TagList;
   }
+  export interface LogPublishingOption {
+    CloudWatchLogsLogGroupArn?: CloudWatchLogsLogGroupArn;
+    /**
+     *  Specifies whether given log publishing option is enabled or not.
+     */
+    Enabled?: Boolean;
+  }
+  export type LogPublishingOptions = {[key: string]: LogPublishingOption};
+  export interface LogPublishingOptionsStatus {
+    /**
+     * The log publishing options configured for the Elasticsearch domain.
+     */
+    Options?: LogPublishingOptions;
+    /**
+     * The status of the log publishing options for the Elasticsearch domain. See OptionStatus for the status information that's included. 
+     */
+    Status?: OptionStatus;
+  }
+  export type LogType = "INDEX_SLOW_LOGS"|"SEARCH_SLOW_LOGS"|string;
   export type MaxResults = number;
   export type MaximumInstanceCount = number;
   export type MinimumInstanceCount = number;
@@ -534,6 +737,41 @@ declare namespace ES {
     PendingDeletion?: Boolean;
   }
   export type PolicyDocument = string;
+  export interface PurchaseReservedElasticsearchInstanceOfferingRequest {
+    /**
+     * The ID of the reserved Elasticsearch instance offering to purchase.
+     */
+    ReservedElasticsearchInstanceOfferingId: GUID;
+    /**
+     * A customer-specified identifier to track this reservation.
+     */
+    ReservationName: ReservationToken;
+    /**
+     * The number of Elasticsearch instances to reserve.
+     */
+    InstanceCount?: InstanceCount;
+  }
+  export interface PurchaseReservedElasticsearchInstanceOfferingResponse {
+    /**
+     * Details of the reserved Elasticsearch instance which was purchased.
+     */
+    ReservedElasticsearchInstanceId?: GUID;
+    /**
+     * The customer-specified identifier used to track this reservation.
+     */
+    ReservationName?: ReservationToken;
+  }
+  export interface RecurringCharge {
+    /**
+     * The monetary amount of the recurring charge.
+     */
+    RecurringChargeAmount?: Double;
+    /**
+     * The frequency of the recurring charge.
+     */
+    RecurringChargeFrequency?: String;
+  }
+  export type RecurringChargeList = RecurringCharge[];
   export interface RemoveTagsRequest {
     /**
      * Specifies the ARN for the Elasticsearch domain from which you want to delete the specified tags.
@@ -544,6 +782,99 @@ declare namespace ES {
      */
     TagKeys: StringList;
   }
+  export type ReservationToken = string;
+  export interface ReservedElasticsearchInstance {
+    /**
+     * The customer-specified identifier to track this reservation.
+     */
+    ReservationName?: ReservationToken;
+    /**
+     * The unique identifier for the reservation.
+     */
+    ReservedElasticsearchInstanceId?: GUID;
+    /**
+     * The offering identifier.
+     */
+    ReservedElasticsearchInstanceOfferingId?: String;
+    /**
+     * The Elasticsearch instance type offered by the reserved instance offering.
+     */
+    ElasticsearchInstanceType?: ESPartitionInstanceType;
+    /**
+     * The time the reservation started.
+     */
+    StartTime?: UpdateTimestamp;
+    /**
+     * The duration, in seconds, for which the Elasticsearch instance is reserved.
+     */
+    Duration?: Integer;
+    /**
+     * The upfront fixed charge you will paid to purchase the specific reserved Elasticsearch instance offering. 
+     */
+    FixedPrice?: Double;
+    /**
+     * The rate you are charged for each hour for the domain that is using this reserved instance.
+     */
+    UsagePrice?: Double;
+    /**
+     * The currency code for the reserved Elasticsearch instance offering.
+     */
+    CurrencyCode?: String;
+    /**
+     * The number of Elasticsearch instances that have been reserved.
+     */
+    ElasticsearchInstanceCount?: Integer;
+    /**
+     * The state of the reserved Elasticsearch instance.
+     */
+    State?: String;
+    /**
+     * The payment option as defined in the reserved Elasticsearch instance offering.
+     */
+    PaymentOption?: ReservedElasticsearchInstancePaymentOption;
+    /**
+     * The charge to your account regardless of whether you are creating any domains using the instance offering.
+     */
+    RecurringCharges?: RecurringChargeList;
+  }
+  export type ReservedElasticsearchInstanceList = ReservedElasticsearchInstance[];
+  export interface ReservedElasticsearchInstanceOffering {
+    /**
+     * The Elasticsearch reserved instance offering identifier.
+     */
+    ReservedElasticsearchInstanceOfferingId?: GUID;
+    /**
+     * The Elasticsearch instance type offered by the reserved instance offering.
+     */
+    ElasticsearchInstanceType?: ESPartitionInstanceType;
+    /**
+     * The duration, in seconds, for which the offering will reserve the Elasticsearch instance.
+     */
+    Duration?: Integer;
+    /**
+     * The upfront fixed charge you will pay to purchase the specific reserved Elasticsearch instance offering. 
+     */
+    FixedPrice?: Double;
+    /**
+     * The rate you are charged for each hour the domain that is using the offering is running.
+     */
+    UsagePrice?: Double;
+    /**
+     * The currency code for the reserved Elasticsearch instance offering.
+     */
+    CurrencyCode?: String;
+    /**
+     * Payment option for the reserved Elasticsearch instance offering
+     */
+    PaymentOption?: ReservedElasticsearchInstancePaymentOption;
+    /**
+     * The charge to your account regardless of whether you are creating any domains using the instance offering.
+     */
+    RecurringCharges?: RecurringChargeList;
+  }
+  export type ReservedElasticsearchInstanceOfferingList = ReservedElasticsearchInstanceOffering[];
+  export type ReservedElasticsearchInstancePaymentOption = "ALL_UPFRONT"|"PARTIAL_UPFRONT"|"NO_UPFRONT"|string;
+  export type RoleArn = string;
   export type ServiceUrl = string;
   export interface SnapshotOptions {
     /**
@@ -617,6 +948,14 @@ declare namespace ES {
      */
     SnapshotOptions?: SnapshotOptions;
     /**
+     * Options to specify the subnets and security groups for VPC endpoint. For more information, see Creating a VPC in VPC Endpoints for Amazon Elasticsearch Service Domains
+     */
+    VPCOptions?: VPCOptions;
+    /**
+     * Options to specify the Cognito user and identity pools for Kibana authentication. For more information, see Amazon Cognito Authentication for Kibana.
+     */
+    CognitoOptions?: CognitoOptions;
+    /**
      * Modifies the advanced option to allow references to indices in an HTTP request body. Must be false when configuring access to individual sub-resources. By default, the value is true. See Configuration Advanced Options for more information.
      */
     AdvancedOptions?: AdvancedOptions;
@@ -624,6 +963,10 @@ declare namespace ES {
      * IAM access policy as a JSON-formatted string.
      */
     AccessPolicies?: PolicyDocument;
+    /**
+     * Map of LogType and LogPublishingOption, each containing options to publish a given type of Elasticsearch log.
+     */
+    LogPublishingOptions?: LogPublishingOptions;
   }
   export interface UpdateElasticsearchDomainConfigResponse {
     /**
@@ -632,6 +975,45 @@ declare namespace ES {
     DomainConfig: ElasticsearchDomainConfig;
   }
   export type UpdateTimestamp = Date;
+  export type UserPoolId = string;
+  export interface VPCDerivedInfo {
+    /**
+     * The VPC Id for the Elasticsearch domain. Exists only if the domain was created with VPCOptions.
+     */
+    VPCId?: String;
+    /**
+     * Specifies the subnets for VPC endpoint.
+     */
+    SubnetIds?: StringList;
+    /**
+     * The availability zones for the Elasticsearch domain. Exists only if the domain was created with VPCOptions.
+     */
+    AvailabilityZones?: StringList;
+    /**
+     * Specifies the security groups for VPC endpoint.
+     */
+    SecurityGroupIds?: StringList;
+  }
+  export interface VPCDerivedInfoStatus {
+    /**
+     *  Specifies the VPC options for the specified Elasticsearch domain.
+     */
+    Options: VPCDerivedInfo;
+    /**
+     *  Specifies the status of the VPC options for the specified Elasticsearch domain.
+     */
+    Status: OptionStatus;
+  }
+  export interface VPCOptions {
+    /**
+     * Specifies the subnets for VPC endpoint.
+     */
+    SubnetIds?: StringList;
+    /**
+     * Specifies the security groups for VPC endpoint.
+     */
+    SecurityGroupIds?: StringList;
+  }
   export type VolumeType = "standard"|"gp2"|"io1"|string;
   /**
    * A string in YYYY-MM-DD format that represents the latest possible API version that can be used in this service. Specify 'latest' to use the latest possible version.
