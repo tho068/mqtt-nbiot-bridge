@@ -128,7 +128,6 @@ module.exports = {
     findAuthOption: (options) => {
         for(let i = 0; i < options.length; i++){
             let option = options[i]
-            console.log(option)
             if(option.name == '403'){
                 return option.value.toString('binary')
             }
