@@ -41,18 +41,20 @@ const flatten = (ob) => {
 
 /* Convert streamed data into a buffer type */
 const readStream = async (stream, cb) => {
-  try {
-    let chunks = []
-    stream.on('data', (chunk) => {
-      chunks.push(chunk)
-    })
-
-    stream.on('end', () => {
-      resolv(Buffer.concat(chunks))
-    })
-  } catch (e) {
-    throw e
-  }
+  return new Promise((Resolve, Reject) =>  {
+    try {
+      let chunks = []
+      stream.on('data', (chunk) => {
+        chunks.push(chunk)
+      })
+  
+      stream.on('end', () => {
+        Resolve(Buffer.concat(chunks))
+      })
+    } catch (e) {
+      Reject(e)
+    }
+  })
 }
 
 /* Send message with MQTT */

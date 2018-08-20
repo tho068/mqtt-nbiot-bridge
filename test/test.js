@@ -16,7 +16,7 @@ var req = coap.request({
   pathname: '/00001511',
 })
 
-req.setOption('403', 'ba0bdc0e32cf508420af18db374b9b30')
+req.setOption('403', '76c76d05f8b89f114011a6588b5e0911')
 
 let message = {
   temp: 15,
