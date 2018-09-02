@@ -16,29 +16,6 @@ if (typeof argv.path === 'undefined' ||
 
 const DownLink = new downlink(argv.username, argv.password)
 
-/* Flatten object of any depth into single depth obj */
-const flatten = (ob) => {
-  let toReturn = {}
-
-  for (let i in ob) {
-    if (!ob.hasOwnProperty(i))
-      continue
-
-    if ((typeof ob[i]) == 'object') {
-      let flatObject = flattenObject(ob[i])
-      for (var x in flatObject) {
-        if (!flatObject.hasOwnProperty(x))
-          continue
-
-        toReturn[i + '.' + x] = flatObject[x]
-      }
-    } else {
-      toReturn[i] = ob[i]
-    }
-  }
-  return toReturn
-}
-
 /* Convert streamed data into a buffer type */
 const readStream = async (stream, cb) => {
   return new Promise((Resolve, Reject) =>  {
@@ -69,16 +46,9 @@ const sendMQTTmessage = (thingId, data) => {
 
   device.on('connect', function () {
     let topic = `$aws/things/${thingId}/shadow/update`
-    let message = {
-      state: {
-        reported: {
-          ...data
-        }
-      }
-    }
 
     /* Publish and disconnect */
-    device.publish(topic, JSON.stringify(message), (err) => {
+    device.publish(topic, JSON.stringify(data), (err) => {
       if (err) {
         console.log(err.toString())
       }
@@ -98,9 +68,9 @@ const getDownlink = (thingId) => {
 server.on('request', async (req, res) => {
   try {
     let buffer = await readStream(req)
-    let data = flatten(JSON.parse(buffer.toString()))
+    let data = JSON.parse(buffer.toString())
     let thingId = req.url.substring(1)
-    let hash = utils.findAuthOption(req.options)
+    let hash = utils.findAuthOption(data)
 
     /* Check if certificate exist */
     if (!fs.existsSync(`${argv.path}/${thingId}`)) {
@@ -115,6 +85,7 @@ server.on('request', async (req, res) => {
       sendMQTTmessage(thingId, data)
 
       res.code = 200
+      
       res.end(JSON.stringify({
         message: 'Message is being published',
         status: 200,
@@ -131,7 +102,7 @@ server.on('request', async (req, res) => {
     console.log(e)
     res.code = 500
     res.end(JSON.stringify({
-      message: error.toString(),
+      message: e,
       status: 500
     }))
   }

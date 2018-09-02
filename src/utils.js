@@ -27,6 +27,7 @@ module.exports = {
             thingName
           }
         }
+        
         const data = await api.invoke('ThingLambda', payload)
 
         fs.writeFile(`${fixPath(path)}/${thingName}.zip`, Buffer.from(data, 'base64'), (err) => {
@@ -127,13 +128,15 @@ module.exports = {
   },
 
   findAuthOption: (options) => {
-    for (let i = 0; i < options.length; i++) {
-      let option = options[i]
-      if (option.name == '403') {
-        return option.value.toString('binary')
+    try {
+      if(typeof options.auth === 'undefined'){
+        return null
+      } else {
+        return options.auth
       }
+    } catch (e){
+      console.log(e)
+      return null
     }
-
-    return null
   }
 }
