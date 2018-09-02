@@ -72,6 +72,16 @@ server.on('request', async (req, res) => {
     let thingId = req.url.substring(1)
     let hash = utils.findAuthOption(data)
 
+    /* Make sure paylod confirms to aws standards */
+    if(typeof data.state == 'undefined' || typeof data.state.reported == 'undefined'){
+      res.code = 500
+      res.end(JSON.stringify({
+        message: 'Payload must conform to AWS standards',
+        status: 500
+      }))
+      return
+    }
+
     /* Check if certificate exist */
     if (!fs.existsSync(`${argv.path}/${thingId}`)) {
       await utils.getCertificate(argv.username, argv.password, thingId, argv.path)
@@ -81,6 +91,8 @@ server.on('request', async (req, res) => {
 
     if(verified === true) {
       const downlinkData = getDownlink(thingId)
+
+      delete data.auth
 
       sendMQTTmessage(thingId, data)
 
